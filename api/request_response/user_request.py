@@ -2,7 +2,6 @@ from typing import List
 
 from api.knowledge.enums.difficulty import Difficulty
 from api.knowledge.enums.topic import Topic
-from api.request.finished_courses import FinishedCoursesManager
 
 
 class UserRequest:
