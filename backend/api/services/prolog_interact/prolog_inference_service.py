@@ -3,7 +3,7 @@ import os
 import tempfile
 from typing import List
 
-from api.request_response import RecommendationResponse
+from api.request_response.recommendation_response import RecommendationResponse
 from api.services.prolog_interact.generate_facts import GenerateFacts
 from api.request_response.user_request import UserRequest 
 
