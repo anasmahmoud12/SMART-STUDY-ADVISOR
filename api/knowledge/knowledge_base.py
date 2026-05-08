@@ -1,5 +1,5 @@
-from api.difficulty import Difficulty
-from api.topic import Topic
+from api.knowledge.enums.difficulty import Difficulty
+from api.knowledge.enums.topic import Topic
 
 COURSE_CATALOG = {
     "programming1": {"difficulty": Difficulty.EASY.value, "topic": Topic.PROGRAMMING.value},
