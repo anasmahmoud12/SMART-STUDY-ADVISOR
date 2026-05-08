@@ -6,12 +6,12 @@ from api.request.finished_courses import FinishedCoursesManager
 
 
 class UserRequest:
-    def __init__(self, name: str, difficulty: Difficulty, finished_manager: FinishedCoursesManager, interests: List[Topic]):
+    def __init__(self, name: str, difficulty: Difficulty, finished_courses: List[str], interests: List[Topic]):
         self.name = name
         
         self.difficulty = difficulty
         
-        self.finished_courses = finished_manager 
+        self.finished_courses = finished_courses 
         
         self.interests = interests
 
@@ -24,7 +24,7 @@ class UserRequest:
         for interest in self.interests:
             facts.append(f"student_interest('{self.name}', {interest.value}).")
             
-        for course in self.finished_courses.courses:
+        for course in self.finished_courses:
             facts.append(f"has_finished('{self.name}', {course}).")
             
-        return "\n".join(facts)
+        return "\n".join(facts) 
