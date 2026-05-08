@@ -1,3 +1,7 @@
+course(cs101)
+course(cs201)
+course(cs301)
+
 course_difficulty(cs101, easy).
 course_difficulty(cs201, medium).
 course_difficulty(cs301, hard).

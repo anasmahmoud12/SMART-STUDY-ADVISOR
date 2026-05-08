@@ -3,7 +3,7 @@ from django.shortcuts import render
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from .prolog_service import get_prolog_recommendation
 @csrf_exempt
 def recommend_course(request):
     if request.method == 'POST':
@@ -13,7 +13,8 @@ def recommend_course(request):
             chosen_mode = data.get('mode')
             
             if chosen_mode == 'prolog':
-                result = "Software Engineering (from Prolog)"
+                #we connect the backend with prolog 
+                result  = get_prolog_recommendation(data)
             elif chosen_mode == 'ai':
                 result = "Data Structures (from AI)"
             else:
