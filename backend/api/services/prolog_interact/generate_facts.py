@@ -1,4 +1,4 @@
-from api.knowledge.knowledge_base import COURSE_CATALOG, PREREQUISITE_GRAPH
+from backend.api.knowledge.knowledge_base import COURSE_CATALOG, PREREQUISITE_GRAPH
 
 class GenerateFacts:
  
