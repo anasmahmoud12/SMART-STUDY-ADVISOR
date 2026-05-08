@@ -15,4 +15,16 @@ class UserRequest:
         
         self.interests = interests
 
- 
+    def to_prolog_facts(self):
+       
+        facts = []
+        
+        facts.append(f"student_preference('{self.name}', {self.difficulty.value}).")
+        
+        for interest in self.interests:
+            facts.append(f"student_interest('{self.name}', {interest.value}).")
+            
+        for course in self.finished_courses.courses:
+            facts.append(f"has_finished('{self.name}', {course}).")
+            
+        return "\n".join(facts)
