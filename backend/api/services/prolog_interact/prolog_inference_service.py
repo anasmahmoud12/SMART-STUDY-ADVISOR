@@ -3,8 +3,8 @@ import os
 import tempfile
 from typing import List
 
-from backend.api.models import UserRequest, RecommendationResponse
-from backend.api.services.prolog_interact.generate_facts import GenerateFacts 
+from api.services.prolog_interact.generate_facts import GenerateFacts
+from api.request_response.user_request import UserRequest 
 
 class PrologInferenceService:
     

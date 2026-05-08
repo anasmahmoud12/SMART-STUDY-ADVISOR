@@ -3,15 +3,15 @@ from typing import Union
 
 from api.knowledge.enums.difficulty import Difficulty
 from api.knowledge.enums.topic import Topic
-from backend.api.request_response.recommendation_response import RecommendationResponse
-from backend.api.request_response.error_response import ErrorResponse
-from backend.api.knowledge.knowledge_base import COURSE_CATALOG
+from api.request_response.recommendation_response import RecommendationResponse
+from api.request_response.error_response import ErrorResponse
+from api.knowledge.knowledge_base import COURSE_CATALOG
 
 
-from backend.api.request_response.system_meta_data_response import SystemMetadataResponse
-from backend.api.request_response.user_request import UserRequest
-from backend.api.request_response.validator.finished_courses import FinishedCoursesManager
-from backend.api.services.prolog_interact.prolog_inference_service import PrologInferenceService
+from api.request_response.system_meta_data_response import SystemMetadataResponse
+from api.request_response.user_request import UserRequest
+from api.request_response.validator.finished_courses import FinishedCoursesManager
+from api.services.prolog_interact.prolog_inference_service import PrologInferenceService
 
 class RecommendationService:
     

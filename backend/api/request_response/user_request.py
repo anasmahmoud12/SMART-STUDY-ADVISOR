@@ -1,7 +1,7 @@
 from typing import List
 
-from backend.api.knowledge.enums.difficulty import Difficulty
-from backend.api.knowledge.enums.topic import Topic
+from api.knowledge.enums.difficulty import Difficulty
+from api.knowledge.enums.topic import Topic
 
 
 class UserRequest:

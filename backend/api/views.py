@@ -4,8 +4,8 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from backend.api.request_response.error_response import ErrorResponse
-from backend.api.services.recommendation_service import RecommendationService
+from api.request_response.error_response import ErrorResponse
+from api.services.recommendation_service import RecommendationService
 from .prolog_service import get_prolog_recommendation
 
 """
