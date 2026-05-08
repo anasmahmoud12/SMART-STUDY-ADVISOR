@@ -44,8 +44,11 @@ class PrologInferenceService:
             base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
             rules_file = os.path.join(base_dir, 'logic_engine', 'rules.pl')
 
-            #queury recommand
-            query = f"recommend('{user_request.name}', Course)."
+            #queury recommand but it is called find all 
+            """
+            which tell prolog return all courses not one by one 
+            """
+            query = f"findall(Course, recommend('{user_request.name}', Course), CoursesList), writeln(CoursesList)."
             """
             this make child process but 
             this in simple way  tell OS can you open terminal and run the command 
@@ -66,28 +69,35 @@ class PrologInferenceService:
             """
             
             stdout, stderr = process.communicate()
+            print(stdout)
             #this remove our facts file this was just temporary file of facts 
             os.remove(temp_facts_path)
             """
-            
+            parsing the text which come from prolog
             
             """
+            # remove all spaces 
+            raw_output=stdout.strip()
             recommended_list = []
-            if "Course =" in stdout:
-                course = stdout.split("Course =")[1].strip()
-                recommended_list.append(course)
-                
-                return RecommendationResponse(
-                    status="success",
-                    message="Recommendation generated successfully.",
-                    recommended_courses=recommended_list
-                )
+            if raw_output == "[]" or not raw_output.startswith("["):
+              
+              return RecommendationResponse(
+                status="success",
+                message="No courses match your current criteria.",
+                recommended_courses=[]
+                        )
             else:
-                return RecommendationResponse(
-                    status="success",
-                    message="No courses match your current criteria.",
-                    recommended_courses=[]
-                )
+               clean_text = raw_output.replace("[", "").replace("]", "").strip()
+    
+               recommended_list = clean_text.split(",")
+    
+               recommended_list = [course.strip() for course in recommended_list if course.strip()]
+    
+               return RecommendationResponse(
+        status="success",
+        message="Recommendations generated successfully.",
+        recommended_courses=recommended_list
+    )
 
         except Exception as e:
             if 'temp_facts_path' in locals() and os.path.exists(temp_facts_path):
