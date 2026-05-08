@@ -8,6 +8,18 @@ from backend.api.request_response.error_response import ErrorResponse
 from backend.api.services.recommendation_service import RecommendationService
 from .prolog_service import get_prolog_recommendation
 
+"""
+example on the json must send from frontend which have the input of 
+user
+{
+    "student_name": "anas",
+    "difficulty": "medium",
+    "interests": ["ai", "software_engineering"],
+    "finished_courses": ["programming1", "machine_language"]
+}
+"""
+
+
 @csrf_exempt
 def recommend_course_api(request):
     if request.method == 'POST':
@@ -28,6 +40,16 @@ def recommend_course_api(request):
         except ValueError as e:
             return JsonResponse({"error": f"Invalid data value: {str(e)}"}, status=400)
 
+"""
+
+
+
+ "courses": self.courses,
+                "difficulties": self.difficulties,
+                "topics": self.topics
+
+
+"""
 def get_metadata_api(request):
     if request.method == 'GET':
 
