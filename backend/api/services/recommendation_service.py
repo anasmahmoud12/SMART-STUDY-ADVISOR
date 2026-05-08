@@ -3,9 +3,11 @@ from typing import Union
 
 from api.knowledge.enums.difficulty import Difficulty
 from api.knowledge.enums.topic import Topic
-from api.request_response.RecommendationResponse import RecommendationResponse
-from api.request_response.ErrorResponse import ErrorResponse
+from backend.api.request_response.recommendation_response import RecommendationResponse
+from backend.api.request_response.error_response import ErrorResponse
 from backend.api.knowledge.knowledge_base import COURSE_CATALOG
+
+
 from backend.api.request_response.system_meta_data_response import SystemMetadataResponse
 from backend.api.request_response.user_request import UserRequest
 from backend.api.request_response.validator.finished_courses import FinishedCoursesManager
