@@ -5,6 +5,8 @@ from api.knowledge.enums.difficulty import Difficulty
 from api.knowledge.enums.topic import Topic
 from api.request_response.RecommendationResponse import RecommendationResponse
 from api.request_response.ErrorResponse import ErrorResponse
+from backend.api.knowledge.knowledge_base import COURSE_CATALOG
+from backend.api.request_response.system_meta_data_response import SystemMetadataResponse
 from backend.api.request_response.user_request import UserRequest
 from backend.api.request_response.validator.finished_courses import FinishedCoursesManager
 from backend.api.services.prolog_interact.prolog_inference_service import PrologInferenceService
@@ -38,3 +40,18 @@ class RecommendationService:
         final_response = PrologInferenceService.get_recommendation(clean_user_request)
         
         return final_response
+    
+    @staticmethod
+    def get_system_metadata() -> SystemMetadataResponse:
+        
+        available_courses = list(COURSE_CATALOG.keys())
+        difficulties = [d.value for d in Difficulty]
+        topics = [t.value for t in Topic]
+        
+        response_obj = SystemMetadataResponse(
+            courses=available_courses,
+            difficulties=difficulties,
+            topics=topics
+        )
+        
+        return response_obj
