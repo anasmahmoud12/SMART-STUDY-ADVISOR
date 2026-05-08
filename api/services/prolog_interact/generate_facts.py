@@ -1,7 +1,8 @@
 from api.knowledge.knowledge_base import COURSE_CATALOG, PREREQUISITE_GRAPH
 
 class GenerateFacts:
-
+ 
+ @staticmethod
  def generate_system_facts():
     
     facts = []
