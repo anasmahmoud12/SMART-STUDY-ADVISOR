@@ -42,7 +42,7 @@ class PrologInferenceService:
              why he make that to make the code not relative and depand on 
             where we in terminal and make run to python code
             """ 
-            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
             rules_file = os.path.join(base_dir, 'logic_engine', 'rules.pl')
 
             #queury recommand but it is called find all 
@@ -70,7 +70,9 @@ class PrologInferenceService:
             """
             
             stdout, stderr = process.communicate()
-            print(stdout)
+            print(f"--- PROLOG STDOUT --- \n{stdout}")
+            if stderr:
+             print(f"--- PROLOG STDERR --- \n{stderr}")
             #this remove our facts file this was just temporary file of facts 
             os.remove(temp_facts_path)
             """

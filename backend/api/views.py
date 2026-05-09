@@ -18,7 +18,7 @@ user
     "finished_courses": ["programming1", "machine_language"]
 }
 """
-
+# http://127.0.0.1:8000/api/recommend
 
 @csrf_exempt
 def recommend_course_api(request):
@@ -26,7 +26,7 @@ def recommend_course_api(request):
         try:
             data_dict = json.loads(request.body)
             
-            service_result = RecommendationService.process_request(data_dict)
+            service_result = RecommendationService.process_prolog_request(data_dict)
             
             if isinstance(service_result, ErrorResponse):
                 status_code = 400 
@@ -44,12 +44,14 @@ def recommend_course_api(request):
 
 
 
- "courses": self.courses,
-                "difficulties": self.difficulties,
-                "topics": self.topics
+                 "courses":[],
+                "difficulties":[],
+                "topics":   []
 
 
 """
+# http://127.0.0.1:8000/api/get_metadata_api/ 
+
 def get_metadata_api(request):
     if request.method == 'GET':
 
