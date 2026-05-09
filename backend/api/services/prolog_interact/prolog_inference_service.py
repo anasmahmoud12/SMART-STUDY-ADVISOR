@@ -18,6 +18,7 @@ class PrologInferenceService:
             user_facts = user_request.to_prolog_facts()
             
             all_facts = f"{system_facts}\n{user_facts}"
+            print(f"ALL facts\n{all_facts}")
             #with each request there is file we create it to put facts 
             """
             so request if it many in same time each one access on each file
@@ -59,7 +60,7 @@ class PrologInferenceService:
 
             """
             process = subprocess.Popen(
-                ['swipl', '-s', rules_file, '-s', temp_facts_path, '-g', query, '-t', 'halt'],
+                ['swipl', '-l', rules_file, '-l', temp_facts_path, '-g', query, '-t', 'halt'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True

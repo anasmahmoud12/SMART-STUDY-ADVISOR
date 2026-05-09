@@ -1,3 +1,11 @@
+:- dynamic course/1.
+:- dynamic course_difficulty/2.
+:- dynamic course_topic/2.
+:- dynamic prerequest/2.
+:- dynamic not_have_prerequest/1.
+:- dynamic student_preference/2.
+:- dynamic student_interest/2.
+:- dynamic has_finished/2.
 
 check_prereq(_Student, Course) :-
     not_have_prerequest(Course).
