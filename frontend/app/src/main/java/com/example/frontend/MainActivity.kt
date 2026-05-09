@@ -1,6 +1,7 @@
 package com.example.frontend
 
 import android.os.Bundle
+import android.view.RoundedCorner
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -18,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,9 +31,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +43,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.frontend.ui.theme.FrontendTheme
 import androidx.compose.ui.graphics.Color
+import com.example.frontend.model.RecommendationRequest
+import com.example.frontend.service.RetroFitInstance
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,25 +144,42 @@ fun LoginPreview() {
 @Composable
 fun Home() {
     var mode by remember { mutableStateOf("Prolog") }
-    val interests = listOf<String>(
-        "Reading",
-        "Writing",
-        "Coding",
-    )
+    var interests by remember {mutableStateOf(listOf<String>())}
+
     var interestsExpanded by remember { mutableStateOf(false) }
 
     var selectedInterests by remember { mutableStateOf(setOf<String>()) }
 
-    val courses = listOf<String>(
-        "Computer Science",
-        "Machine Learning",
-        "Programming 1",
-        "Math"
-    )
+    var difficulties = listOf<String>("Easy", "Medium", "Hard")
 
+    var chosenDifficulty by remember { mutableStateOf("Easy") }
+
+    var courses by remember {mutableStateOf(listOf<String>())}
     var expanded by remember {mutableStateOf(true)}
 
+    var diffExpanded by remember { mutableStateOf(false) }
+
     var selectedCourses by remember { mutableStateOf(setOf<String>()) }
+
+    var results by remember { mutableStateOf(setOf<String>()) }
+
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+
+        try {
+            val metaData = RetroFitInstance.api.getMetaData()
+
+            courses = metaData.data.courses
+            interests = metaData.data.topics
+
+        } catch (e: Exception) {
+            println(e.message)
+            println("ERROR HERE")
+        }
+
+    }
+
 
     Column(
         modifier = Modifier
@@ -321,6 +345,105 @@ fun Home() {
 
 
 
+        }
+
+        ExposedDropdownMenuBox(
+            expanded = diffExpanded,
+            onExpandedChange = {
+                diffExpanded = !diffExpanded
+            }
+            ) {
+
+            OutlinedTextField(
+                value = chosenDifficulty,
+                readOnly = true,
+                onValueChange = {},
+
+                label = { Text(text = "Difficulty", color = Color.White) },
+
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(interestsExpanded) },
+
+                modifier = Modifier.menuAnchor().fillMaxWidth()
+            )
+
+            ExposedDropdownMenu(
+                expanded = diffExpanded,
+                onDismissRequest = {
+                    diffExpanded = false
+                }
+            ) {
+                difficulties.forEach{diff ->
+
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(
+                                    checked = diff == chosenDifficulty,
+                                    onCheckedChange = null
+                                )
+
+                                Text(diff)
+                            }
+                        },
+                        onClick = {
+                            chosenDifficulty = diff
+                        }
+                    )
+                }
+            }
+        }
+
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text("Recommendations", color = Color.White)
+
+                Spacer(Modifier.height(20.dp))
+
+                results.forEach {result ->
+                    Text("Result", color = Color.White)
+                }
+            }
+
+        }
+
+        Button(
+            onClick = {
+                var request = RecommendationRequest(
+                    student_name = "anas",
+                    difficulty = chosenDifficulty.lowercase(),
+                    interests = selectedInterests.toList(),
+                    finished_courses = selectedCourses.toList()
+                )
+                println(request)
+
+                scope.launch {
+                    try {
+                        val response = RetroFitInstance.api.getRecommendation(request)
+                        results = response.data.courses.toSet()
+                        println(response)
+                    } catch (e: Exception) {
+                        println(e.message)
+                    }
+                }
+            },
+
+
+            shape = RoundedCornerShape(6.dp),
+
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black
+            )
+        ) {
+            Text(text = "Make Request", color = Color.Black)
         }
 
     }
