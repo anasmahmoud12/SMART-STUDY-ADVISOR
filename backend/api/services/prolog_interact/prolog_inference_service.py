@@ -50,7 +50,10 @@ class PrologInferenceService:
             """
             which tell prolog return all courses not one by one 
             """
-            query = f"findall(Course, recommend('{user_request.name}', Course), CoursesList), writeln(CoursesList)."
+            prolog_files = f"['{rules_file}', '{temp_facts_path}']"
+            query =f"consult({prolog_files}), findall(Course, recommend('{user_request.name}', Course), CoursesList), writeln(CoursesList)."
+            
+
             """
             this make child process but 
             this in simple way  tell OS can you open terminal and run the command 
@@ -60,7 +63,7 @@ class PrologInferenceService:
 
             """
             process = subprocess.Popen(
-                ['swipl', '-l', rules_file, '-l', temp_facts_path, '-g', query, '-t', 'halt'],
+                ['swipl', '-q', '-g', query, '-t', 'halt'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True

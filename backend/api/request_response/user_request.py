@@ -18,13 +18,13 @@ class UserRequest:
        
         facts = []
         
-        facts.append(f"student_preference('{self.name}', {self.difficulty.value}).")
+        facts.append(f"student_preference('{self.name}', '{self.difficulty.value}').")
         
         for interest in self.interests:
-            facts.append(f"student_interest('{self.name}', {interest.value}).")
+            facts.append(f"student_interest('{self.name}', '{interest.value}').")
             
         for course in self.finished_courses:
-            facts.append(f"has_finished('{self.name}', {course}).")
+            facts.append(f"has_finished('{self.name}', '{course}').")
             
         return "\n".join(facts) 
     """
