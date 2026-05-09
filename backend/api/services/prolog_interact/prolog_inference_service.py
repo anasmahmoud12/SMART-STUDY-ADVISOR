@@ -18,6 +18,7 @@ class PrologInferenceService:
             user_facts = user_request.to_prolog_facts()
             
             all_facts = f"{system_facts}\n{user_facts}"
+            print(f"ALL facts\n{all_facts}")
             #with each request there is file we create it to put facts 
             """
             so request if it many in same time each one access on each file
@@ -42,14 +43,17 @@ class PrologInferenceService:
              why he make that to make the code not relative and depand on 
             where we in terminal and make run to python code
             """ 
-            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
             rules_file = os.path.join(base_dir, 'logic_engine', 'rules.pl')
 
             #queury recommand but it is called find all 
             """
             which tell prolog return all courses not one by one 
             """
-            query = f"findall(Course, recommend('{user_request.name}', Course), CoursesList), writeln(CoursesList)."
+            prolog_files = f"['{rules_file}', '{temp_facts_path}']"
+            query =f"consult({prolog_files}), findall(Course, recommend('{user_request.name}', Course), CoursesList), writeln(CoursesList)."
+            
+
             """
             this make child process but 
             this in simple way  tell OS can you open terminal and run the command 
@@ -59,7 +63,7 @@ class PrologInferenceService:
 
             """
             process = subprocess.Popen(
-                ['swipl', '-s', rules_file, '-s', temp_facts_path, '-g', query, '-t', 'halt'],
+                ['swipl', '-q', '-g', query, '-t', 'halt'],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
@@ -70,7 +74,9 @@ class PrologInferenceService:
             """
             
             stdout, stderr = process.communicate()
-            print(stdout)
+            print(f"--- PROLOG STDOUT --- \n{stdout}")
+            if stderr:
+             print(f"--- PROLOG STDERR --- \n{stderr}")
             #this remove our facts file this was just temporary file of facts 
             os.remove(temp_facts_path)
             """
