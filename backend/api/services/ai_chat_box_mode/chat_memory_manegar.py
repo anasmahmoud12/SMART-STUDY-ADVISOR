@@ -36,6 +36,7 @@ class ChatMemoryManager:
         self.chat_history: List[Dict[str, str]] = [
             {"role": "system", "content": system_guidelines}
         ]
+        print(self.chat_history)
 
     def add_message(self, role: str, message: str) -> None:
       
