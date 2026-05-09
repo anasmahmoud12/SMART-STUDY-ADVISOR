@@ -5,7 +5,7 @@ from google import genai
 from api.services.ai_chat_box_mode.chat_memory_manegar import ChatMemoryManager
 
 
-api_key_string = "AIzaSyA18uPFQTohQzTjJIcM4iC0BXM9kHmg33Y"
+api_key_string = "AIzaSyDIQB7FewvRnBRPaLwX-q0p-No9HUOfjSQ"
 client = genai.Client(api_key=api_key_string)
 
 class AIChatService:

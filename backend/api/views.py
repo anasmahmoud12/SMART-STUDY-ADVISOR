@@ -78,3 +78,13 @@ def chat_with_ai_api(request):
             return JsonResponse({"error": "Invalid JSON format"}, status=400)
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
+def get_chat_history_for_frontend(self) -> list:
+      
+        raw_history = self.memory_manager.get_history()
+        filtered_history = []
+        
+        for message in raw_history:
+            if message["role"] != "system":
+                filtered_history.append(message)
+                
+        return filtered_history        
