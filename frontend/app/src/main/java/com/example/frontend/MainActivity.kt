@@ -1,12 +1,10 @@
 package com.example.frontend
 
 import android.os.Bundle
-import android.view.RoundedCorner
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,9 +15,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,14 +28,13 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Label
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -46,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.frontend.ui.theme.FrontendTheme
 import androidx.compose.ui.graphics.Color
+import com.example.frontend.model.AIRequest
 import com.example.frontend.model.Message
 import com.example.frontend.model.RecommendationRequest
 import com.example.frontend.service.RetroFitInstance
@@ -57,27 +57,31 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FrontendTheme {
-                Home()
+                ChatBox()
             }
         }
     }
 }
 
 @Composable
-fun ChatBox() {
-
+@Preview(showBackground = true)
+fun ChatBoxPreview() {
+    FrontendTheme() {
+        ChatBox()
+    }
 
 }
 
 @Composable
-@Preview(showBackground = true)
-fun ChatBoxPreview() {
-    var messages by remember { mutableStateOf(listOf<Message>(
-        Message("ai", "hello"),
-        Message("user", "hi")
-
-    )) }
+fun ChatBox() {
+    val messages = remember {
+        mutableStateListOf<Message>(
+            Message("ai", "hello"),
+            Message("user", "hi")
+        )
+    }
     var message by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -89,47 +93,46 @@ fun ChatBoxPreview() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("AI Chat", color = Color.White, style = MaterialTheme.typography.headlineMedium)
-
-
-        Spacer(modifier = Modifier.weight(1f))
-        Column(
-            modifier = Modifier.fillMaxWidth()
+        LazyColumn (
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
         ) {
-            messages.forEach { message ->
-                Card(
-                    modifier = Modifier
-                        .background(
-                            color = if (message.sender == "ai") {
-                                Color.Blue
-                            } else {
-                                Color.White
-                            }
-                        ).align(
-                            if (message.sender == "user") {
-                                Alignment.End
-                            } else {
-                                Alignment.Start
-                            }
-                        )
-                        .padding(1.dp),
-
-
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (message.sender == "ai") {
-                            Color.Blue
+            items(messages) { message ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement =
+                        if (message.role == "user") {
+                            Arrangement.End
                         } else {
-                            Color.White
+                            Arrangement.Start
                         }
-                    )
                 ) {
-                    Text(
-                        text = message.content,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Card(
+                        modifier = Modifier.padding(4.dp),
+
+                        colors = CardDefaults.cardColors(
+                            containerColor =
+                                if (message.role == "ai") {
+                                    Color.Blue
+                                } else {
+                                    Color.DarkGray
+                                }
+                        )
+                    ) {
+
+                        Text(
+                            text = message.content,
+                            color = Color.White,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+
+
                 }
             }
         }
-        Spacer(Modifier.height(20.dp))
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -156,7 +159,22 @@ fun ChatBoxPreview() {
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
-                    onClick = { }
+                    onClick = {
+                        if (message.replace(" ", "") != "") {
+                            messages.add(Message("user", message))
+
+                            scope.launch {
+                                try {
+                                    val response = RetroFitInstance.api.chatAI(AIRequest(message))
+                                    messages.add(Message("ai", response.response))
+                                    message = ""
+                                } catch (e: Exception) {
+                                    println(e.message)
+                                }
+
+                            }
+                        }
+                    }
                 ) {
                     Text("Send")
                 }
@@ -307,7 +325,7 @@ fun Home() {
             ) {
             Text(text = "Switch Mode", color = Color.Black)
         }
-        
+
         Spacer(Modifier.height(20.dp))
 
         Text(

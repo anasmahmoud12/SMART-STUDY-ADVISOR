@@ -1,5 +1,7 @@
 package com.example.frontend.service
 
+import com.example.frontend.model.AIRequest
+import com.example.frontend.model.AIResponse
 import com.example.frontend.model.ApiResponse
 import com.example.frontend.model.RecommendationRequest
 import com.example.frontend.model.RecommendationResponse
@@ -17,5 +19,7 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     suspend fun getRecommendation(@Body request: RecommendationRequest): RecommendationResponse
 
-    
+    @POST("api/chat_with_ai_api/")
+    @Headers("Content-Type: application/json")
+    suspend fun chatAI(@Body request: AIRequest): AIResponse
 }
