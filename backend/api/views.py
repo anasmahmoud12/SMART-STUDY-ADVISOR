@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from api.request_response.error_response import ErrorResponse
 from api.services.recommendation_service import RecommendationService
+from api.services.ai_chat_box_mode.ai_chat_service import AIChatService
 from .prolog_service import get_prolog_recommendation
 
 """
@@ -57,4 +58,28 @@ def get_metadata_api(request):
 
         metadata_obj = RecommendationService.get_system_metadata()
         
-        return JsonResponse(metadata_obj.to_dict())        
+        return JsonResponse(metadata_obj.to_dict())   
+# http://127.0.0.1:8000/api/chat_with_ai_api/
+@csrf_exempt
+def chat_with_ai_api(request):
+    if request.method == 'POST':
+        try:
+            data_dict = json.loads(request.body)
+            user_text = data_dict.get("message")
+
+            ai_service = AIChatService()
+            ai_service.process_user_input(user_text)
+            ai_reply = ai_service.fetch_ai_response()
+            ai_service.process_ai_output(ai_reply)
+
+            history_matrix = ai_service.get_chat_history_for_frontend()
+
+            return JsonResponse({"status": "success",
+                                  "response": ai_reply,
+                                  "history": history_matrix})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+     
