@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,11 +16,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.frontend.ui.theme.FrontendTheme
 import androidx.compose.ui.graphics.Color
+import com.example.frontend.model.Message
 import com.example.frontend.model.RecommendationRequest
 import com.example.frontend.service.RetroFitInstance
 import kotlinx.coroutines.launch
@@ -60,20 +64,111 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun ChatBox() {
+
+
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    FrontendTheme {
-//        Greeting("Android")
-//    }
-//}
+@Composable
+@Preview(showBackground = true)
+fun ChatBoxPreview() {
+    var messages by remember { mutableStateOf(listOf<Message>(
+        Message("ai", "hello"),
+        Message("user", "hi")
+
+    )) }
+    var message by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(20.dp),
+
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("AI Chat", color = Color.White, style = MaterialTheme.typography.headlineMedium)
+
+
+        Spacer(modifier = Modifier.weight(1f))
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            messages.forEach { message ->
+                Card(
+                    modifier = Modifier
+                        .background(
+                            color = if (message.sender == "ai") {
+                                Color.Blue
+                            } else {
+                                Color.White
+                            }
+                        ).align(
+                            if (message.sender == "user") {
+                                Alignment.End
+                            } else {
+                                Alignment.Start
+                            }
+                        )
+                        .padding(1.dp),
+
+
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (message.sender == "ai") {
+                            Color.Blue
+                        } else {
+                            Color.White
+                        }
+                    )
+                ) {
+                    Text(
+                        text = message.content,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+        }
+        Spacer(Modifier.height(20.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                OutlinedTextField(
+                    value = message,
+                    onValueChange = { message = it },
+                    placeholder = {
+                        Text(
+                            "Send Message",
+                            color = Color.White
+                        )
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Button(
+                    onClick = { }
+                ) {
+                    Text("Send")
+                }
+            }
+        }
+
+    }
+
+
+
+
+}
 
 @Composable
 fun Login() {
@@ -363,7 +458,9 @@ fun Home() {
 
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(interestsExpanded) },
 
-                modifier = Modifier.menuAnchor().fillMaxWidth()
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
             )
 
             ExposedDropdownMenu(
@@ -396,7 +493,9 @@ fun Home() {
         }
 
         Card(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             shape = RoundedCornerShape(12.dp)
         ) {
 

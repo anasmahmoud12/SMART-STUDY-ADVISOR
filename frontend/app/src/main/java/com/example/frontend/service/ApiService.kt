@@ -16,4 +16,6 @@ interface ApiService {
     @POST("api/recommend")
     @Headers("Content-Type: application/json")
     suspend fun getRecommendation(@Body request: RecommendationRequest): RecommendationResponse
+
+    
 }
