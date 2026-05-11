@@ -16,7 +16,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -65,7 +68,28 @@ fun ChatBox(navController: NavController, username: String) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.size(20.dp))
-        Text("AI Chat", color = Color.White, style = MaterialTheme.typography.headlineMedium)
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("AI Chat",
+                color = Color.White,
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.align(Alignment.Center)
+            )
+            Button(
+                onClick = {
+                    navController.navigate("prolog/$username")
+                },
+                modifier = Modifier.align(Alignment.CenterEnd),
+                shape = RoundedCornerShape(6.dp),
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color.Black,
+                    containerColor = Color.White
+                )
+            ) {
+                Text("Prolog")
+            }
+        }
         LazyColumn (
             state = listState,
             modifier = Modifier
@@ -150,10 +174,13 @@ fun ChatBox(navController: NavController, username: String) {
                                 } catch (e: Exception) {
                                     println(e.message)
                                 }
-
                             }
                         }
-                    }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.Black,
+                        containerColor = Color.White
+                    )
                 ) {
                     Text("Send")
                 }
