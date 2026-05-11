@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("androidx.navigation:navigation-compose:2.8.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
