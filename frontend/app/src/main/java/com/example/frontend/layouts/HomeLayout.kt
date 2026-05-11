@@ -305,8 +305,8 @@ fun Home(navController: NavController, username: String) {
 
                 Spacer(Modifier.height(20.dp))
 
-                results.forEach {result ->
-                    Text("Result", color = Color.White)
+                results.forEach { courseName ->
+                    Text(text = courseName, color = Color.White)
                 }
             }
 
