@@ -3,9 +3,11 @@ from pathlib import Path
 from dotenv import load_dotenv
 from google import genai
 from api.services.ai_chat_box_mode.chat_memory_manegar import ChatMemoryManager
-BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(os.path.join(BASE_DIR, '.env'))
-api_key_string = os.environ.get("GEMINI_API_KEY")
+from dotenv import load_dotenv
+
+key_path = Path(__file__).resolve().parent.parent.parent.parent / ".env"
+load_dotenv(key_path)
+api_key_string = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key_string)
 
 class AIChatService:

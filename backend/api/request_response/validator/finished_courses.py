@@ -1,4 +1,4 @@
-from api.knowledge.knowledge_base import COURSE_CATALOG, PREREQUISITE_GRAPH
+from api.knowledge.knowledge_base import get_prerequiste_graph
 
 from typing import List,Tuple
 class FinishedCoursesManager:
@@ -9,9 +9,10 @@ class FinishedCoursesManager:
         valid_courses = []
         invalid_courses = []
 
+        prerequisite_graph = get_prerequiste_graph()
         for course in self.courses:
-            if course in PREREQUISITE_GRAPH:
-                prereqs = PREREQUISITE_GRAPH[course]
+            if course in prerequisite_graph and prerequisite_graph[course] != []:
+                prereqs = prerequisite_graph[course]
                 has_all_prereqs = all(p in self.courses for p in prereqs)
                 
                 if has_all_prereqs:

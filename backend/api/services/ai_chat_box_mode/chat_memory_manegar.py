@@ -1,7 +1,8 @@
 from typing import List, Dict
-from api.knowledge.knowledge_base import COURSE_CATALOG, PREREQUISITE_GRAPH
+from api.knowledge.knowledge_base import get_prerequiste_graph
 from api.knowledge.enums.difficulty import Difficulty
 from api.knowledge.enums.topic import Topic
+from api.models import Course
 
 class ChatMemoryManager:
     _instance = None
@@ -15,12 +16,15 @@ class ChatMemoryManager:
     def _initialize_system_history(self):
        
         catalog_info = "AVAILABLE COURSES CATALOG:\n"
-        for course, details in COURSE_CATALOG.items():
-            catalog_info += f"- '{course}': Difficulty: {details['difficulty']}, Topic: {details['topic']}\n"
+        courses = Course.objects.all()
+        for course in courses:
+            catalog_info += f"- '{course.display_name}': Difficulty: {course.difficulty}, Topic: {course.topic_display_name}\n"
 
         prereq_info = "\nPREREQUISITE RULES:\n"
-        for course, prereqs in PREREQUISITE_GRAPH.items():
+        prerequisite_graph = get_prerequiste_graph()
+        for course, prereqs in prerequisite_graph.items():
             prereq_info += f"- To study '{course}', MUST finish: {', '.join(prereqs)}\n"
+            print(prereq_info)
 
         system_guidelines = (
             "You are an Academic Advisor AI. Follow these rules STRICTLY:\n\n"

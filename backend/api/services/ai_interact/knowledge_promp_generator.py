@@ -1,7 +1,8 @@
 
 
 
-from api.knowledge.knowledge_base import COURSE_CATALOG, PREREQUISITE_GRAPH
+from api.knowledge.knowledge_base import get_prerequiste_graph
+from api.models import Course
 
 
 class KnowledgePromptGenerator:
@@ -9,14 +10,16 @@ class KnowledgePromptGenerator:
     def generate_knowledge_context() -> str:
       
         context = "ACADEMIC RULES & CONSTRAINTS (STRICT ENFORCEMENT):\n\n"
+        courses = Course.objects.all()
         
         context += "1. AVAILABLE COURSE CATALOG:\n"
-        for course, details in COURSE_CATALOG.items():
-            context += f"- {course}: Difficulty: {details['difficulty']}, Topic: {details['topic']}\n"
+        for course in courses:
+            context += f"- {course.display_name}: Difficulty: {course.difficulty}, Topic: {course.topic_display_name}\n"
 
         context += "\n2. PREREQUISITES (DEPENDENCY GRAPH):\n"
-        for target, prereqs in PREREQUISITE_GRAPH.items():
-            context += f"- To unlock '{target}', the student MUST have completed: {', '.join(prereqs)}\n"
+        prereqs = get_prerequiste_graph()
+        for course in prereqs.keys():
+            context += f"- To unlock '{course}', the student MUST have completed: {', '.join(prereqs[course])}\n"
 
         context += (
             "\n3. MANDATORY OPERATIONAL RULES:\n"

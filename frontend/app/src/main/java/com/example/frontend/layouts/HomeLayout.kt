@@ -42,18 +42,18 @@ import kotlinx.coroutines.launch
 @Composable
 fun Home(navController: NavController, username: String) {
     var mode by remember { mutableStateOf("Prolog") }
-    var interests by remember {mutableStateOf(listOf<String>())}
+    var interests by remember { mutableStateOf(listOf<String>()) }
 
     var interestsExpanded by remember { mutableStateOf(false) }
 
     var selectedInterests by remember { mutableStateOf(setOf<String>()) }
 
-    var difficulties = listOf<String>("Easy", "Medium", "Hard")
+    val difficulties = listOf("Elementary", "Intermediate", "Advanced")
 
-    var chosenDifficulty by remember { mutableStateOf("Easy") }
+    var chosenDifficulty by remember { mutableStateOf("Elementary") }
 
-    var courses by remember {mutableStateOf(listOf<String>())}
-    var expanded by remember {mutableStateOf(true)}
+    var courses by remember { mutableStateOf(listOf<String>()) }
+    var expanded by remember { mutableStateOf(true) }
 
     var diffExpanded by remember { mutableStateOf(false) }
 
@@ -146,7 +146,7 @@ fun Home(navController: NavController, username: String) {
                     expanded = false
                 }
             ) {
-                courses.forEach{course ->
+                courses.forEach { course ->
 
                     DropdownMenuItem(
 
@@ -207,7 +207,7 @@ fun Home(navController: NavController, username: String) {
                 }
             ) {
 
-                interests.forEach{interest ->
+                interests.forEach { interest ->
 
                     DropdownMenuItem(
                         text = {
@@ -236,7 +236,6 @@ fun Home(navController: NavController, username: String) {
 
 
             }
-
 
 
         }
@@ -268,7 +267,7 @@ fun Home(navController: NavController, username: String) {
                     diffExpanded = false
                 }
             ) {
-                difficulties.forEach{diff ->
+                difficulties.forEach { diff ->
 
                     DropdownMenuItem(
                         text = {
@@ -305,8 +304,8 @@ fun Home(navController: NavController, username: String) {
 
                 Spacer(Modifier.height(20.dp))
 
-                results.forEach { courseName ->
-                    Text(text = courseName, color = Color.White)
+                results.forEach { result ->
+                    Text(result, color = Color.White)
                 }
             }
 
@@ -314,7 +313,7 @@ fun Home(navController: NavController, username: String) {
 
         Button(
             onClick = {
-                var request = RecommendationRequest(
+                val request = RecommendationRequest(
                     student_name = username,
                     difficulty = chosenDifficulty.lowercase(),
                     interests = selectedInterests.toList(),
@@ -345,7 +344,6 @@ fun Home(navController: NavController, username: String) {
         }
 
     }
-
 
 
 }

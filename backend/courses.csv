@@ -1,0 +1,125 @@
+name,display_name,topic_display_name,topic,difficulty,prerequisites
+programming_1,Programming 1,Programming,programming,elementary,
+programming_2,Programming 2,Programming,programming,elementary,programming_1
+programming_3,Programming 3,Programming,programming,intermediate,programming_2
+machine_learning_1,Machine Learning 1,Artificial Intelligence,ai,advanced,programming_2|statistics_1
+machine_learning_2,Machine Learning 2,Artificial Intelligence,ai,advanced,machine_learning_1
+statistics_1,Statistics 1,Data Science,data_science,intermediate,
+statistics_2,Statistics 2,Data Science,data_science,intermediate,statistics_1
+data_visualization,Data Visualization,Data Science,data_science,intermediate,statistics_1
+deep_learning,Deep Learning,Artificial Intelligence,ai,advanced,machine_learning_1|python_2
+python_1,Python 1,Programming,programming,elementary,
+python_2,Python 2,Programming,programming,elementary,python_1
+python_3,Python 3,Programming,programming,intermediate,python_2
+java_1,Java 1,Programming,programming,elementary,
+java_2,Java 2,Programming,programming,intermediate,java_1
+web_dev_fundamentals,Web Dev Fundamentals,Web Development,web_development,elementary,
+html_css,HTML CSS,Web Development,web_development,elementary,web_dev_fundamentals
+javascript_basics,JavaScript Basics,Web Development,web_development,elementary,html_css
+react_js,React JS,Web Development,web_development,intermediate,javascript_basics
+node_js_backend,Node JS Backend,Backend,backend,intermediate,javascript_basics
+express_js,Express JS,Backend,backend,intermediate,node_js_backend
+database_design,Database Design,Backend,backend,intermediate,
+sql_1,SQL 1,Data Science,data_science,elementary,
+sql_2,SQL 2,Data Science,data_science,intermediate,sql_1
+nosql_databases,NoSQL Databases,Backend,backend,intermediate,sql_1
+mongodb_basics,MongoDB Basics,Backend,backend,intermediate,nosql_databases
+cybersecurity_fundamentals,Cybersecurity Fundamentals,Cybersecurity,cyber,elementary,
+network_security,Network Security,Cybersecurity,cyber,intermediate,cybersecurity_fundamentals
+ethical_hacking_1,Ethical Hacking 1,Cybersecurity,cyber,advanced,network_security|linux_1
+ethical_hacking_2,Ethical Hacking 2,Cybersecurity,cyber,advanced,ethical_hacking_1
+cryptography_1,Cryptography 1,Cybersecurity,cyber,advanced,discrete_math_1
+cryptography_2,Cryptography 2,Cybersecurity,cyber,advanced,cryptography_1
+linux_1,Linux 1,DevOps,devops,elementary,
+linux_2,Linux 2,DevOps,devops,intermediate,linux_1
+bash_scripting,Bash Scripting,DevOps,devops,intermediate,linux_1
+docker_1,Docker 1,DevOps,devops,intermediate,linux_1
+docker_2,Docker 2,DevOps,devops,intermediate,docker_1
+kubernetes_1,Kubernetes 1,DevOps,devops,advanced,docker_2
+kubernetes_2,Kubernetes 2,DevOps,devops,advanced,kubernetes_1
+aws_practitioner,AWS Practitioner,Cloud Computing,cloud,intermediate,
+aws_solutions_architect,AWS Solutions Architect,Cloud Computing,cloud,advanced,aws_practitioner
+azure_fundamentals,Azure Fundamentals,Cloud Computing,cloud,intermediate,
+devops_fundamentals,DevOps Fundamentals,DevOps,devops,elementary,
+ci_cd_pipelines,CI CD Pipelines,DevOps,devops,intermediate,devops_fundamentals|git_1
+git_1,Git 1,Version Control,version_control,elementary,
+git_2,Git 2,Version Control,version_control,intermediate,git_1
+data_structures_1,Data Structures 1,Algorithms,algorithms,advanced,programming_1
+data_structures_2,Data Structures 2,Algorithms,algorithms,advanced,data_structures_1
+algorithms_1,Algorithms 1,Algorithms,algorithms,advanced,data_structures_1
+algorithms_2,Algorithms 2,Algorithms,algorithms,advanced,algorithms_1
+discrete_math_1,Discrete Math 1,Mathematics,mathematics,intermediate,
+discrete_math_2,Discrete Math 2,Mathematics,mathematics,intermediate,discrete_math_1
+linear_algebra_1,Linear Algebra 1,Mathematics,mathematics,intermediate,
+linear_algebra_2,Linear Algebra 2,Mathematics,mathematics,advanced,linear_algebra_1
+computer_networks_1,Computer Networks 1,Networking,networking,intermediate,
+computer_networks_2,Computer Networks 2,Networking,networking,advanced,computer_networks_1
+operating_systems_1,Operating Systems 1,Systems,systems,advanced,programming_2
+operating_systems_2,Operating Systems 2,Systems,systems,advanced,operating_systems_1
+compiler_design,Compiler Design,Systems,systems,advanced,algorithms_1|operating_systems_1
+mobile_dev_android,Mobile Dev Android,Mobile Development,mobile_development,intermediate,java_1
+mobile_dev_ios,Mobile Dev iOS,Mobile Development,mobile_development,intermediate,swift_1
+swift_1,Swift 1,Mobile Development,mobile_development,elementary,
+game_dev_unity,Game Dev Unity,Game Development,game_development,intermediate,programming_2|c_sharp_1
+c_sharp_1,C Sharp 1,Programming,programming,elementary,
+c_sharp_2,C Sharp 2,Programming,programming,intermediate,c_sharp_1
+c_plus_plus_1,C Plus Plus 1,Programming,programming,intermediate,programming_1
+c_plus_plus_2,C Plus Plus 2,Programming,programming,advanced,c_plus_plus_1
+rust_programming,Rust Programming,Programming,programming,intermediate,programming_2
+go_programming,Go Programming,Programming,programming,intermediate,programming_2
+ruby_on_rails,Ruby on Rails,Backend,backend,intermediate,ruby_1
+ruby_1,Ruby 1,Programming,programming,elementary,
+rails_basics,Rails Basics,Backend,backend,intermediate,ruby_1
+api_design,API Design,Backend,backend,intermediate,programming_2
+restful_apis,RESTful APIs,Backend,backend,intermediate,api_design
+graphql,GraphQL,Backend,backend,intermediate,restful_apis
+microservices_1,Microservices 1,Backend,backend,advanced,docker_1|restful_apis
+microservices_2,Microservices 2,Backend,backend,advanced,microservices_1
+testing_fundamentals,Testing Fundamentals,Quality Assurance,qa,intermediate,programming_1
+unit_testing,Unit Testing,Quality Assurance,qa,intermediate,testing_fundamentals
+automated_testing,Automated Testing,Quality Assurance,qa,advanced,unit_testing
+jenkins_basics,Jenkins Basics,DevOps,devops,intermediate,git_1
+ansible_basics,Ansible Basics,DevOps,devops,intermediate,linux_1
+terraform_basics,Terraform Basics,DevOps,devops,intermediate,aws_practitioner
+prometheus_monitoring,Prometheus Monitoring,DevOps,devops,advanced,linux_2|docker_1
+elk_stack,ELK Stack,DevOps,devops,advanced,linux_2
+blockchain_basics,Blockchain Basics,Blockchain,blockchain,advanced,programming_2|cryptography_1
+smart_contracts,Smart Contracts,Blockchain,blockchain,advanced,blockchain_basics|solidity_1
+solidity_1,Solidity 1,Blockchain,blockchain,advanced,programming_2
+quantum_computing_1,Quantum Computing 1,Artificial Intelligence,ai,advanced,linear_algebra_2|discrete_math_2
+quantum_computing_2,Quantum Computing 2,Artificial Intelligence,ai,advanced,quantum_computing_1
+nlp_1,NLP 1,Artificial Intelligence,ai,advanced,machine_learning_1|python_2
+nlp_2,NLP 2,Artificial Intelligence,ai,advanced,nlp_1
+computer_vision_1,Computer Vision 1,Artificial Intelligence,ai,advanced,machine_learning_1|python_2
+computer_vision_2,Computer Vision 2,Artificial Intelligence,ai,advanced,computer_vision_1
+reinforcement_learning,Reinforcement Learning,Artificial Intelligence,ai,advanced,machine_learning_2
+big_data_1,Big Data 1,Data Science,data_science,advanced,programming_2|sql_2
+big_data_2,Big Data 2,Data Science,data_science,advanced,big_data_1
+hadoop_basics,Hadoop Basics,Data Science,data_science,advanced,big_data_1
+spark_basics,Spark Basics,Data Science,data_science,advanced,big_data_1|python_2
+data_engineering_1,Data Engineering 1,Data Science,data_science,advanced,sql_2|python_2
+data_engineering_2,Data Engineering 2,Data Science,data_science,advanced,data_engineering_1
+tableau_desktop,Tableau Desktop,Data Science,data_science,intermediate,statistics_1
+power_bi,Power BI,Data Science,data_science,intermediate,statistics_1
+frontend_frameworks,Frontend Frameworks,Web Development,web_development,intermediate,javascript_basics
+angular_1,Angular 1,Web Development,web_development,intermediate,javascript_basics
+angular_2,Angular 2,Web Development,web_development,intermediate,angular_1
+vue_js,Vue JS,Web Development,web_development,intermediate,javascript_basics
+svelte,Svelte,Web Development,web_development,intermediate,javascript_basics
+web_assembly,Web Assembly,Web Development,web_development,advanced,c_plus_plus_1
+progressive_web_apps,Progressive Web Apps,Web Development,web_development,intermediate,react_js|angular_1
+seo_basics,SEO Basics,Web Development,web_development,elementary,
+web_performance,Web Performance,Web Development,web_development,intermediate,web_dev_fundamentals
+accessibility_web,Accessibility Web,Web Development,web_development,intermediate,html_css
+pentesting_1,Pentesting 1,Cybersecurity,cyber,advanced,network_security
+pentesting_2,Pentesting 2,Cybersecurity,cyber,advanced,pentesting_1
+forensics_1,Forensics 1,Cybersecurity,cyber,advanced,operating_systems_1
+forensics_2,Forensics 2,Cybersecurity,cyber,advanced,forensics_1
+malware_analysis,Malware Analysis,Cybersecurity,cyber,advanced,assembly_1|c_plus_plus_1
+assembly_1,Assembly 1,Systems,systems,advanced,programming_1
+reverse_engineering,Reverse Engineering,Cybersecurity,cyber,advanced,assembly_1|operating_systems_1
+soc_analyst,SOC Analyst,Cybersecurity,cyber,intermediate,cybersecurity_fundamentals
+incident_response,Incident Response,Cybersecurity,cyber,advanced,soc_analyst
+threat_intelligence,Threat Intelligence,Cybersecurity,cyber,advanced,incident_response
+cloud_security,Cloud Security,Cybersecurity,cyber,advanced,aws_practitioner|cybersecurity_fundamentals
+iac_security,IaC Security,Cybersecurity,cyber,advanced,terraform_basics|cloud_security

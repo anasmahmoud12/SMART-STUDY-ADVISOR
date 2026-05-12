@@ -56,9 +56,10 @@ def recommend_course_api(request):
 def get_metadata_api(request):
     if request.method == 'GET':
 
-        metadata_obj = RecommendationService.get_system_metadata()
+        metadata_obj = RecommendationService.get_system_metadata_new()
         
         return JsonResponse(metadata_obj.to_dict())   
+    
 # http://127.0.0.1:8000/api/chat_with_ai_api/
 @csrf_exempt
 def chat_with_ai_api(request):
@@ -81,5 +82,6 @@ def chat_with_ai_api(request):
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON format"}, status=400)
         except Exception as e:
+            print(e)
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
      

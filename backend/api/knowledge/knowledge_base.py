@@ -1,16 +1,12 @@
 from api.knowledge.enums.difficulty import Difficulty
 from api.knowledge.enums.topic import Topic
+from api.models import Course
 
-COURSE_CATALOG = {
-    "programming1": {"difficulty": Difficulty.EASY.value, "topic": Topic.PROGRAMMING.value},
-    "software_engineering": {"difficulty": Difficulty.EASY.value, "topic": Topic.SOFTWARE_ENGINEERING.value},
-    "machine_language": {"difficulty": Difficulty.EASY.value, "topic": Topic.PROGRAMMING.value},
-    "ai": {"difficulty": Difficulty.EASY.value, "topic": Topic.AI.value},
-    "programming2": {"difficulty": Difficulty.EASY.value, "topic": Topic.PROGRAMMING.value}
-}
+def get_prerequiste_graph():
+    courses = Course.objects.all()
+    prerequisite_graph = {}
 
-PREREQUISITE_GRAPH = {
-    "ai": ["machine_language"],                 
-    "programming2": ["programming1"],           
-    "software_engineering": ["programming1"]   
-}
+    for course in courses:
+        prerequisite_graph[course.name] = course.prerequisites.values_list("name", flat=True)
+
+    return prerequisite_graph
