@@ -1,27 +1,29 @@
-from api.knowledge.knowledge_base import COURSE_CATALOG, PREREQUISITE_GRAPH
+from api.models import Course
 
 class GenerateFacts:
  
  @staticmethod
  def generate_system_facts() -> str:
         facts = []
-        
-        for course in COURSE_CATALOG.keys():
-            facts.append(f"course('{course}').")
-            
-        for course, details in COURSE_CATALOG.items():
-            facts.append(f"course_difficulty('{course}', {details['difficulty']}).")
-            
-        for course, details in COURSE_CATALOG.items():
-            facts.append(f"course_topic('{course}', '{details['topic']}').")
+        courses = Course.objects.all()
 
-        for target_course, prerequisites in PREREQUISITE_GRAPH.items():
+        for course in courses:
+            facts.append(f"course({course.name})")
+            
+        for course in courses:
+            facts.append(f"course_difficulty({course.name}, {course.difficulty})")
+            
+        for course in courses:
+            facts.append(f"course_topic({course.name}, {course.topic})")
+
+        for course in courses:
+            prerequisites = course.prerequisites.all()
+            if prerequisites == []:
+                facts.append(f"not_have_prerequest({course.name})")
+                continue
+
             for prereq in prerequisites:
-                facts.append(f"prerequest('{prereq}', '{target_course}').")
+                facts.append(f"prerequest({prereq.name}, {course.name})")
 
-        courses_with_prereqs = PREREQUISITE_GRAPH.keys()
-        for course in COURSE_CATALOG.keys():
-            if course not in courses_with_prereqs:
-                facts.append(f"not_have_prerequest('{course}').")
 
         return "\n".join(facts)

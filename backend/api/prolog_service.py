@@ -1,5 +1,7 @@
 import subprocess
 import os
+from pyswip import Prolog
+from api.models import Course
 
 class StudentRequest:
     def __init__(self, name, difficulty, interest):
@@ -8,7 +10,7 @@ class StudentRequest:
         self.interest = interest
         
     def to_prolog_facts(self):
-        return f"student_preference('{self.name}', {self.difficulty}). student_interest('{self.name}', {self.interest})."
+        return [f"student_preference('{self.name}', {self.difficulty})", f"student_interest('{self.name}', {Course.objects.filter(topic_display_name=self.interest).first().topic})"]
 
 def get_prolog_recommendation(data_dict):
     clean_text = lambda x: str(x).lower().strip()
@@ -44,3 +46,46 @@ def get_prolog_recommendation(data_dict):
 
     except Exception as e:
         return f"Error connecting to Prolog: {str(e)}"
+
+
+def testpyswip():
+    prolog = Prolog()
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # print(base_dir)
+    prolog_file = os.path.join(base_dir, '..\\', 'logic_engine', 'rules.pl')
+    print(prolog_file)
+
+
+
+    prolog.consult(prolog_file)
+
+    facts = [
+
+        "student_preference(anas, easy)",
+        "student_preference(anas, medium)",
+
+        "(anas, ai)",
+        "student_interest(anas, cybersecurity)",
+        "student_interest(anas, software_engineering)",
+
+        "course(programming1)",
+        "course(machine_learning)",
+        "course(network_security)",
+
+        "course_difficulty(programming1, easy)",
+        "course_difficulty(machine_learning, medium)",
+        "course_difficulty(network_security, hard)",
+
+        "course_topic(programming1, software_engineering)",
+        "course_topic(machine_learning, ai)",
+        "course_topic(network_security, cybersecurity)"
+    ]
+
+    for fact in facts:
+        prolog.assertz(fact)
+
+    results = list(
+        prolog.query("recommend(anas, Course)")
+    )
+    print(results)
+    return ""

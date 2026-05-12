@@ -2,7 +2,9 @@ import subprocess
 import os
 import tempfile
 from typing import List
+from pyswip import Prolog
 
+from api.models import Course
 from api.request_response.recommendation_response import RecommendationResponse
 from api.services.prolog_interact.generate_facts import GenerateFacts
 from api.request_response.user_request import UserRequest 
@@ -18,7 +20,7 @@ class PrologInferenceService:
             user_facts = user_request.to_prolog_facts()
             
             all_facts = f"{system_facts}\n{user_facts}"
-            print(f"ALL facts\n{all_facts}")
+            # print(f"ALL facts\n{all_facts}")
             #with each request there is file we create it to put facts 
             """
             so request if it many in same time each one access on each file
@@ -45,6 +47,8 @@ class PrologInferenceService:
             """ 
             base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
             rules_file = os.path.join(base_dir, 'logic_engine', 'rules.pl')
+            print("BASE: ", base_dir)
+            print("rules: ", rules_file)
 
             #queury recommand but it is called find all 
             """
@@ -52,7 +56,15 @@ class PrologInferenceService:
             """
             prolog_files = f"['{rules_file}', '{temp_facts_path}']"
             query =f"consult({prolog_files}), findall(Course, recommend('{user_request.name}', Course), CoursesList), writeln(CoursesList)."
-            
+            prolog = Prolog()
+            prolog.consult(rules_file)
+            prolog.consult(temp_facts_path)
+            result = list(
+                prolog.query(f"findall(Course, recommend({user_request.name}, Course), CoursesList)")
+            )
+            print("RESULT:",result)
+
+
 
             """
             this make child process but 
@@ -74,9 +86,9 @@ class PrologInferenceService:
             """
             
             stdout, stderr = process.communicate()
-            print(f"--- PROLOG STDOUT --- \n{stdout}")
-            if stderr:
-             print(f"--- PROLOG STDERR --- \n{stderr}")
+            # print(f"--- PROLOG STDOUT --- \n{stdout}")
+            # if stderr:
+            #  print(f"--- PROLOG STDERR --- \n{stderr}")
             #this remove our facts file this was just temporary file of facts 
             os.remove(temp_facts_path)
             """
@@ -110,6 +122,73 @@ class PrologInferenceService:
             if 'temp_facts_path' in locals() and os.path.exists(temp_facts_path):
                 os.remove(temp_facts_path)
             
+            return RecommendationResponse(
+                status="error",
+                message=f"System failed to process logic: {str(e)}",
+                recommended_courses=[]
+            )
+        
+    @staticmethod
+    def getPyswipRecommendation(user_request: UserRequest):
+
+        try:
+            # Generate query facts
+            system_facts = GenerateFacts.generate_system_facts()
+            user_facts = user_request.to_prolog_facts()
+            all_facts = f"{system_facts}\n{user_facts}"
+            username= user_request.name
+
+
+            # Initialize Pyswip interface
+            prolog = Prolog()
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
+            rules_file = os.path.join(base_dir, 'logic_engine', 'rules.pl')
+            prolog.consult(rules_file)
+
+            for fact in all_facts.splitlines():
+                if fact.strip():
+                    print(fact)
+                    prolog.assertz(fact.strip())
+
+
+            # Make query
+            result = list(
+                prolog.query(f"findall(Course, recommend({username}, Course), CoursesList)")
+            )   
+
+            print("RESULT: ", result[0]['CoursesList'])
+
+            message = "No courses match your current criteria." if result[0]['CoursesList'] == [] else "Recommendations generated successfully."
+
+            prolog.retractall('course(_)')
+            prolog.retractall('prerequest(_,_)')
+            prolog.retractall('not_have_prerequest(_)')
+            prolog.retractall('course_topic(_, _)')
+            prolog.retractall('course_difficulty(_,_)')
+            prolog.retractall('student_interest(_,_)')
+            prolog.retractall('student_preference(_,_)')
+            prolog.retractall('has_finished(_,_)')
+
+            courses = []
+            for course in result[0]['CoursesList']:
+                courses.append(Course.objects.get(name=course).display_name)
+
+            return RecommendationResponse(
+                status = "success",
+                message= message,
+                recommended_courses= courses
+            )
+
+        except Exception as e:
+            prolog.retractall('course(_)')
+            prolog.retractall('prerequest(_,_)')
+            prolog.retractall('not_have_prerequest(_)')
+            prolog.retractall('course_topic(_, _)')
+            prolog.retractall('course_difficulty(_,_)')
+            prolog.retractall('student_interest(_,_)')
+            prolog.retractall('student_preference(_,_)')
+            prolog.retractall('has_finished(_,_)')
+
             return RecommendationResponse(
                 status="error",
                 message=f"System failed to process logic: {str(e)}",

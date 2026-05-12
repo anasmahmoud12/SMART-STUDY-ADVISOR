@@ -2,10 +2,11 @@ from typing import List
 
 from api.knowledge.enums.difficulty import Difficulty
 from api.knowledge.enums.topic import Topic
+from api.models import Course
 
 
 class UserRequest:
-    def __init__(self, name: str, difficulty: Difficulty, finished_courses: List[str], interests: List[Topic]):
+    def __init__(self, name: str, difficulty: str, finished_courses: List[str], interests: List[str]):
         self.name = name
         
         self.difficulty = difficulty
@@ -18,13 +19,13 @@ class UserRequest:
        
         facts = []
         
-        facts.append(f"student_preference('{self.name}', '{self.difficulty.value}').")
+        facts.append(f"student_preference({self.name}, {self.difficulty})")
         
         for interest in self.interests:
-            facts.append(f"student_interest('{self.name}', '{interest.value}').")
+            facts.append(f"student_interest({self.name}, {Course.objects.filter(topic_display_name=interest).first().topic})")
             
         for course in self.finished_courses:
-            facts.append(f"has_finished('{self.name}', '{course}').")
+            facts.append(f"has_finished({self.name}, {Course.objects.filter(display_name=course).first().name})")
             
         return "\n".join(facts) 
     """
@@ -32,7 +33,7 @@ class UserRequest:
     """
     def generate_user_context(self) -> str:
        
-        interests_str = ", ".join([i.value for i in self.interests])
+        interests_str = ", ".join([i for i in self.interests])
         finished_str = ", ".join(self.finished_courses) if self.finished_courses else "None"
         
         prompt = (
