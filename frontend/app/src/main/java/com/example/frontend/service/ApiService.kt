@@ -22,4 +22,8 @@ interface ApiService {
     @POST("api/chat_with_ai_api/")
     @Headers("Content-Type: application/json")
     suspend fun chatAI(@Body request: AIRequest): AIResponse
+
+    @GET("api/clear_ai_memory/")
+    suspend fun clearAIMemory(): ApiResponse
+
 }

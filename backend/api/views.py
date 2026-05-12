@@ -52,7 +52,7 @@ def recommend_course_api(request):
 
 """
 # http://127.0.0.1:8000/api/get_metadata_api/ 
-
+@csrf_exempt
 def get_metadata_api(request):
     if request.method == 'GET':
 
@@ -84,4 +84,18 @@ def chat_with_ai_api(request):
         except Exception as e:
             print(e)
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
-     
+
+# http://127.0.0.1:8000/api/clear_ai_memory/
+@csrf_exempt  
+def clear_ai_memory(request):
+    if request.method == 'GET':
+        ai_service=AIChatService()
+        ai_service.clear_hist()
+         
+        return JsonResponse({"status": "success"})
+                                 
+
+
+
+
+                
