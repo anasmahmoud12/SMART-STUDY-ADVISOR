@@ -35,6 +35,7 @@ class ChatMemoryManager:
             "You MUST understand they mean 'programming1' from the catalog.\n"
             "2. Never recommend a course if its prerequisites are not met.\n"
             "3. Be conversational, friendly, and ask clarifying questions if needed."
+            "4. try make the resoponse in three or four lines at most"
         )
 
         self.chat_history: List[Dict[str, str]] = [
