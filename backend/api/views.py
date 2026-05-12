@@ -3,7 +3,10 @@ from django.shortcuts import render
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+import tempfile
+import os
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from api.request_response.error_response import ErrorResponse
 from api.services.recommendation_service import RecommendationService
 from api.services.ai_chat_box_mode.ai_chat_service import AIChatService
@@ -82,4 +85,29 @@ def chat_with_ai_api(request):
             return JsonResponse({"error": "Invalid JSON format"}, status=400)
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
-     
+
+@csrf_exempt
+def chat_with_voice_api(request):
+    if request.method == 'POST':
+        try:
+            audio_file = request.FILES.get('audio')
+            
+            if not audio_file:
+                return JsonResponse({"error": "No audio file provided. Please send a file with the key 'audio'"}, status=400)
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.m4a') as temp_audio:
+                for chunk in audio_file.chunks():
+                    temp_audio.write(chunk)
+                
+                temp_file_path = temp_audio.name
+            
+            os.remove(temp_file_path)
+
+            return JsonResponse({
+                "status": "success", 
+                "message": "Audio received successfully!",
+                "saved_at": temp_file_path
+            })
+
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)     
