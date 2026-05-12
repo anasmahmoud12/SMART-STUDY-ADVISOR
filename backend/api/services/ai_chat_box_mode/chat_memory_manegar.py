@@ -22,8 +22,9 @@ class ChatMemoryManager:
 
         prereq_info = "\nPREREQUISITE RULES:\n"
         prerequisite_graph = get_prerequiste_graph()
-        for course, prereqs in prerequisite_graph:
+        for course, prereqs in prerequisite_graph.items():
             prereq_info += f"- To study '{course}', MUST finish: {', '.join(prereqs)}\n"
+            print(prereq_info)
 
         system_guidelines = (
             "You are an Academic Advisor AI. Follow these rules STRICTLY:\n\n"

@@ -82,5 +82,6 @@ def chat_with_ai_api(request):
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON format"}, status=400)
         except Exception as e:
+            print(e)
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
      

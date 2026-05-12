@@ -15,7 +15,8 @@ def load_csv():
         reader = csv.DictReader(file)
 
         courses = {}
-        for row in reader:
+        rows = list(reader)
+        for row in rows:
             course = Course.objects.create(
                 display_name=row["display_name"],
                 name=row["name"],
@@ -26,8 +27,9 @@ def load_csv():
             course.save()
             courses[row["name"]] = course
 
-        for row in reader:
+        for row in rows:
             for pre in row["prerequisites"].split("|"):
-                course = courses[row["name"]]
-                prerequisite = courses[pre.strip()]
-                course.prerequisites.add(pre)
+                if pre.strip():
+                    course = courses[row["name"]]
+                    prerequisite = courses[pre.strip()]
+                    course.prerequisites.add(prerequisite)
