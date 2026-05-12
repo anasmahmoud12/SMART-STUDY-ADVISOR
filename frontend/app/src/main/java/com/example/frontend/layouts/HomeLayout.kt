@@ -1,33 +1,12 @@
 package com.example.frontend.layouts
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,315 +16,159 @@ import com.example.frontend.model.RecommendationRequest
 import com.example.frontend.service.RetroFitInstance
 import kotlinx.coroutines.launch
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(navController: NavController, username: String) {
-    var mode by remember { mutableStateOf("Prolog") }
-    var interests by remember {mutableStateOf(listOf<String>())}
-
-    var interestsExpanded by remember { mutableStateOf(false) }
-
+    var interests by remember { mutableStateOf(listOf<String>()) }
+    var courses by remember { mutableStateOf(listOf<String>()) }
     var selectedInterests by remember { mutableStateOf(setOf<String>()) }
-
-    var difficulties = listOf<String>("Easy", "Medium", "Hard")
-
-    var chosenDifficulty by remember { mutableStateOf("Easy") }
-
-    var courses by remember {mutableStateOf(listOf<String>())}
-    var expanded by remember {mutableStateOf(true)}
-
-    var diffExpanded by remember { mutableStateOf(false) }
-
     var selectedCourses by remember { mutableStateOf(setOf<String>()) }
-
+    var chosenDifficulty by remember { mutableStateOf("Easy") }
     var results by remember { mutableStateOf(setOf<String>()) }
+
+    var courseExp by remember { mutableStateOf(false) }
+    var interestExp by remember { mutableStateOf(false) }
+    var diffExp by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-
         try {
             val metaData = RetroFitInstance.api.getMetaData()
-
             courses = metaData.data.courses
             interests = metaData.data.topics
-
-        } catch (e: Exception) {
-            println(e.message)
-            println("ERROR HERE")
-        }
-
+        } catch (e: Exception) { println(e.message) }
     }
-
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
-            .padding(12.dp),
-
-        verticalArrangement = Arrangement.Center,
+            .background(Color(0xFF121212))
+            .padding(20.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        Button(
-            onClick = {
-                navController.navigate("chat/$username")
-            },
-
-            modifier = Modifier
-                .align(Alignment.End),
-
-            shape = RoundedCornerShape(6.dp),
-
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
-            )
+        TextButton(
+            onClick = { navController.navigate("chat/$username") },
+            modifier = Modifier.align(Alignment.End)
         ) {
-            Text(text = "AI Mode", color = Color.Black)
+            Text("Switch to AI Chat →", color = Color(0xFF17C6E5))
         }
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(10.dp))
+        Text("Prolog Query", style = MaterialTheme.typography.headlineMedium, color = Color.White)
+        Spacer(Modifier.height(24.dp))
 
-        Text(
-            text = "$mode Query",
-            style = MaterialTheme.typography.headlineMedium,
-            color = Color.White
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = {
-                expanded = !expanded
-            }
-
-        ) {
-            OutlinedTextField(
-                value = selectedCourses.joinToString(),
-                onValueChange = {},
-                readOnly = true,
-
-                label = { Text(text = "Completed Courses", color = Color.White) },
-
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded)
-                },
-
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth()
-            )
-
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = {
-                    expanded = false
-                }
-            ) {
-                courses.forEach{course ->
-
-                    DropdownMenuItem(
-
-                        text = {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Checkbox(
-                                    checked = course in selectedCourses,
-                                    onCheckedChange = null
-                                )
-
-                                Text(course)
-                            }
-                        },
-
-                        onClick = {
-                            selectedCourses =
-                                if (course in selectedCourses) {
-                                    selectedCourses - course
-                                } else {
-                                    selectedCourses + course
-                                }
+        // Courses Dropdown
+        DropdownField("Completed Courses", selectedCourses.joinToString(", "), courseExp, { courseExp = it }) {
+            courses.forEach { course ->
+                DropdownMenuItem(
+                    text = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = course in selectedCourses, onCheckedChange = null)
+                            Text(course)
                         }
-                    )
-
-                }
-
+                    },
+                    onClick = {
+                        selectedCourses = if (course in selectedCourses) selectedCourses - course else selectedCourses + course
+                    }
+                )
             }
-
         }
 
-        ExposedDropdownMenuBox(
-            expanded = interestsExpanded,
-            onExpandedChange = {
-                interestsExpanded = !interestsExpanded
-            }
-        ) {
+        Spacer(Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = selectedInterests.joinToString(),
-                onValueChange = {},
-                readOnly = true,
-
-                label = { Text(text = "Interest", color = Color.White) },
-
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(interestsExpanded) },
-
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth()
-            )
-
-            ExposedDropdownMenu(
-                expanded = interestsExpanded,
-                onDismissRequest = {
-                    interestsExpanded = false
-                }
-            ) {
-
-                interests.forEach{interest ->
-
-                    DropdownMenuItem(
-                        text = {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Checkbox(
-                                    checked = interest in selectedInterests,
-                                    onCheckedChange = null
-                                )
-
-                                Text(interest)
-                            }
-                        },
-                        onClick = {
-                            selectedInterests =
-                                if (interest in selectedInterests) {
-                                    selectedInterests - interest
-                                } else {
-                                    selectedInterests + interest
-                                }
+        // Interests Dropdown
+        DropdownField("Interests", selectedInterests.joinToString(", "), interestExp, { interestExp = it }) {
+            interests.forEach { interest ->
+                DropdownMenuItem(
+                    text = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = interest in selectedInterests, onCheckedChange = null)
+                            Text(interest)
                         }
-                    )
-
-                }
-
-
-            }
-
-
-
-        }
-
-        ExposedDropdownMenuBox(
-            expanded = diffExpanded,
-            onExpandedChange = {
-                diffExpanded = !diffExpanded
-            }
-        ) {
-
-            OutlinedTextField(
-                value = chosenDifficulty,
-                readOnly = true,
-                onValueChange = {},
-
-                label = { Text(text = "Difficulty", color = Color.White) },
-
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(interestsExpanded) },
-
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth()
-            )
-
-            ExposedDropdownMenu(
-                expanded = diffExpanded,
-                onDismissRequest = {
-                    diffExpanded = false
-                }
-            ) {
-                difficulties.forEach{diff ->
-
-                    DropdownMenuItem(
-                        text = {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Checkbox(
-                                    checked = diff == chosenDifficulty,
-                                    onCheckedChange = null
-                                )
-
-                                Text(diff)
-                            }
-                        },
-                        onClick = {
-                            chosenDifficulty = diff
-                        }
-                    )
-                }
+                    },
+                    onClick = {
+                        selectedInterests = if (interest in selectedInterests) selectedInterests - interest else selectedInterests + interest
+                    }
+                )
             }
         }
+
+        Spacer(Modifier.height(16.dp))
+
+        // Difficulty Dropdown
+        DropdownField("Difficulty", chosenDifficulty, diffExp, { diffExp = it }) {
+            listOf("Easy", "Medium", "Hard").forEach { diff ->
+                DropdownMenuItem(
+                    text = { Text(diff) },
+                    onClick = { chosenDifficulty = diff; diffExp = false }
+                )
+            }
+        }
+
+        Spacer(Modifier.height(30.dp))
 
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
             shape = RoundedCornerShape(12.dp)
         ) {
-
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text("Recommendations", color = Color.White)
-
-                Spacer(Modifier.height(20.dp))
-
-                results.forEach { courseName ->
-                    Text(text = courseName, color = Color.White)
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("Recommendations", color = Color(0xFF17C6E5), style = MaterialTheme.typography.titleSmall)
+                Spacer(Modifier.height(12.dp))
+                if (results.isEmpty()) {
+                    Text("Select options and click Make Request", color = Color.Gray)
+                } else {
+                    results.forEach { course ->
+                        Text("• $course", color = Color.White, modifier = Modifier.padding(vertical = 2.dp))
+                    }
                 }
             }
-
         }
+
+        Spacer(Modifier.height(24.dp))
 
         Button(
             onClick = {
-                var request = RecommendationRequest(
-                    student_name = username,
-                    difficulty = chosenDifficulty.lowercase(),
-                    interests = selectedInterests.toList(),
-                    finished_courses = selectedCourses.toList()
-                )
-                println(request)
-
+                val request = RecommendationRequest(username, chosenDifficulty.lowercase(), selectedInterests.toList(), selectedCourses.toList())
                 scope.launch {
                     try {
                         val response = RetroFitInstance.api.getRecommendation(request)
                         results = response.data.courses.toSet()
-                        println(response)
-                    } catch (e: Exception) {
-                        println(e.message)
-                    }
+                    } catch (e: Exception) { println(e.message) }
                 }
             },
-
-
-            shape = RoundedCornerShape(6.dp),
-
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
-            )
+            modifier = Modifier.fillMaxWidth().height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
+            shape = RoundedCornerShape(8.dp)
         ) {
-            Text(text = "Make Request", color = Color.Black)
+            Text("Make Request")
         }
-
     }
+}
 
-
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DropdownField(label: String, value: String, expanded: Boolean, onExpandedChange: (Boolean) -> Unit, content: @Composable ColumnScope.() -> Unit) {
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = onExpandedChange
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(label, color = Color.Gray) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedBorderColor = Color(0xFF17C6E5),
+                unfocusedBorderColor = Color.DarkGray
+            )
+        )
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { onExpandedChange(false) }, content = content)
+    }
 }
