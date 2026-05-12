@@ -94,20 +94,26 @@ def chat_with_voice_api(request):
             
             if not audio_file:
                 return JsonResponse({"error": "No audio file provided. Please send a file with the key 'audio'"}, status=400)
-
+            ai_service = AIChatService()
             with tempfile.NamedTemporaryFile(delete=False, suffix='.m4a') as temp_audio:
                 for chunk in audio_file.chunks():
                     temp_audio.write(chunk)
                 
                 temp_file_path = temp_audio.name
             
+            ai_service.process_user_input("[Voice Message] - Please listen to the attached audio and reply based on the rules.")
+            ai_reply = ai_service.fetch_ai_voice_response(audio_path=temp_file_path)
+            ai_service.process_ai_output(ai_reply)
             os.remove(temp_file_path)
+            history_matrix = ai_service.get_chat_history_for_frontend()
 
             return JsonResponse({
                 "status": "success", 
-                "message": "Audio received successfully!",
-                "saved_at": temp_file_path
+                "response": ai_reply,         
+                "history": history_matrix     
             })
 
         except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)}, status=500)     
+            if 'temp_file_path' in locals() and os.path.exists(temp_file_path):
+                os.remove(temp_file_path)
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)

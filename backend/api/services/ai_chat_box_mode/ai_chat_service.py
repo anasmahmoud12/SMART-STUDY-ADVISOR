@@ -64,3 +64,36 @@ class AIChatService:
                 filtered_history.append(message)
                 
         return filtered_history       
+    def fetch_ai_voice_response(self, audio_path: str) -> str:
+        
+        raw_history = self.memory_manager.get_history()
+        system_instruction = ""
+        gemini_formatted_history = []
+
+        for message in raw_history:
+            if message["role"] == "system":
+                system_instruction = message["content"]
+            else:
+                gemini_formatted_history.append(
+                    genai.types.Content(
+                        role=message["role"],
+                        parts=[genai.types.Part(text=message["content"])]
+                    )
+                )
+
+        print(f"--- Uploading Audio File to Gemini: {audio_path} ---")
+        uploaded_audio = client.files.upload(file=audio_path)
+        
+        gemini_formatted_history[-1].parts.append(uploaded_audio)
+
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.5-flash", 
+                contents=gemini_formatted_history,
+                config=genai.types.GenerateContentConfig(
+                    system_instruction=system_instruction
+                )
+            )
+            return response.text
+        except Exception as e:
+            raise ConnectionError(f"Gemini API failed to respond to voice: {str(e)}")
