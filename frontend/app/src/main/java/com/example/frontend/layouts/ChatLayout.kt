@@ -20,6 +20,7 @@ import androidx.navigation.NavController
 import com.example.frontend.model.AIRequest
 import com.example.frontend.model.Message
 import com.example.frontend.service.RetroFitInstance
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -137,9 +138,30 @@ fun ChatBox(navController: NavController, username: String) {
                                 scope.launch {
                                     try {
                                         val response = RetroFitInstance.api.chatAI(AIRequest(currentInput))
-                                        messages.add(Message("ai", response.response))
+                                        var displayed = ""
+                                        var showCursor = false
+                                        var lastChar = false
+                                        messages.add(Message("ai", displayed))
+                                        for (i in response.response.indices) {
+                                            lastChar = (i == response.response.lastIndex)
+                                            displayed = response.response.substring(0, i + 1)
+                                            messages[messages.lastIndex] = Message("ai", displayed + if (showCursor && !lastChar) "|" else "")
+                                            delay(20)
+                                            showCursor = !showCursor
+                                        }
                                     } catch (e: Exception) {
-                                        messages.add(Message("ai", "Error connecting to server."))
+                                        val errMessage = "Error connecting to server."
+                                        var displayed = ""
+                                        var showCursor = false
+                                        var lastChar = false
+                                        messages.add(Message("ai", displayed))
+                                        for (i in errMessage.indices) {
+                                            lastChar = (i == errMessage.lastIndex)
+                                            displayed = errMessage.substring(0, i + 1)
+                                            messages[messages.lastIndex] = Message("ai", displayed + if (showCursor && !lastChar) "|" else "")
+                                            delay(20)
+                                            showCursor = !showCursor
+                                        }
                                     }
                                 }
                             }
