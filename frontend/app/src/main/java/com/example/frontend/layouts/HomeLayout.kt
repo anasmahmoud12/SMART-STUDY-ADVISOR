@@ -52,7 +52,7 @@ fun Home(navController: NavController, username: String) {
             onClick = { navController.navigate("chat/$username") },
             modifier = Modifier.align(Alignment.End)
         ) {
-            Text("Switch to AI Chat →", color = Color(0xFF17C6E5))
+            Text("Switch to AI Chat →", color = Color.White)
         }
 
         Spacer(Modifier.height(10.dp))
@@ -115,10 +115,10 @@ fun Home(navController: NavController, username: String) {
             shape = RoundedCornerShape(12.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text("Recommendations", color = Color(0xFF17C6E5), style = MaterialTheme.typography.titleSmall)
+                Text("Recommendations", color = Color.White, style = MaterialTheme.typography.titleSmall)
                 Spacer(Modifier.height(12.dp))
                 if (results.isEmpty()) {
-                    Text("Select options and click Make Request", color = Color.Gray)
+                    Text("Select options and click Make Request", color = Color.White)
                 } else {
                     results.forEach { course ->
                         Text("• $course", color = Color.White, modifier = Modifier.padding(vertical = 2.dp))
@@ -159,7 +159,7 @@ fun DropdownField(label: String, value: String, expanded: Boolean, onExpandedCha
             value = value,
             onValueChange = {},
             readOnly = true,
-            label = { Text(label, color = Color.Gray) },
+            label = { Text(label, color = Color.White) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             modifier = Modifier.menuAnchor().fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(

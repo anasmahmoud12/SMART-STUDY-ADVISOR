@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -55,7 +56,7 @@ fun ChatBox(navController: NavController, username: String) {
                             navController.navigate("prolog/$username")
                         }
                     }) {
-                        Text("Prolog", color = Color(0xFF17C6E5))
+                        Text("Prolog", color = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color(0xFF121212))
@@ -71,7 +72,14 @@ fun ChatBox(navController: NavController, username: String) {
         ) {
             LazyColumn(
                 state = listState,
-                modifier = Modifier.weight(1f).fillMaxWidth(),
+                modifier = Modifier.weight(1f).fillMaxWidth().background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF0F172A),
+                            Color.Blue
+                        )
+                    )
+                ),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -116,7 +124,7 @@ fun ChatBox(navController: NavController, username: String) {
                     TextField(
                         value = messageText,
                         onValueChange = { messageText = it },
-                        placeholder = { Text("Type a message...", color = Color.Gray) },
+                        placeholder = { Text("Type a message...", color = Color.White) },
                         modifier = Modifier.weight(1f),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,

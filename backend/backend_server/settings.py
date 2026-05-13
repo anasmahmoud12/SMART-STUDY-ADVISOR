@@ -27,7 +27,7 @@ DEBUG = True
 
 # ALLOWED_HOSTS = ["192.168.1.3", "127.0.0.1"]
 
-ALLOWED_HOSTS = ['192.168.1.3', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['192.168.1.8', '127.0.0.1', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
