@@ -66,5 +66,5 @@ class AIChatService:
                 filtered_history.append(message)
                 
         return filtered_history       
-    def clear_hist(self, ai_response: str) -> None:
+    def clear_hist(self) -> None:
         self.memory_manager.clear_history()
